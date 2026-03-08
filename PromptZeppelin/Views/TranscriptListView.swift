@@ -4,7 +4,18 @@ struct TranscriptListView: View {
     @EnvironmentObject var listVM: TranscriptListViewModel
 
     var body: some View {
-        List(selection: $listVM.selectedTranscriptId) {
+        let selectionBinding = Binding<UUID?>(
+            get: { listVM.selectedTranscriptId },
+            set: { newValue in
+                if listVM.selectedTranscriptId != newValue {
+                    DispatchQueue.main.async {
+                        listVM.selectedTranscriptId = newValue
+                    }
+                }
+            }
+        )
+
+        List(selection: selectionBinding) {
             ForEach(listVM.transcripts) { transcript in
                 VStack(alignment: .leading, spacing: 2) {
                     Text(transcript.title)
