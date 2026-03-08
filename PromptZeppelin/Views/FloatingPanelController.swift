@@ -6,6 +6,8 @@ final class FloatingPanelController: ObservableObject {
     @Published var isShowing = false
     private var panel: NSPanel?
 
+    private var eventMonitor: Any?
+
     func show(viewModel: TeleprompterViewModel) {
         if panel != nil { close() }
 
@@ -40,6 +42,27 @@ final class FloatingPanelController: ObservableObject {
         panel.minSize = NSSize(width: 300, height: 60)
         panel.contentView = hostingView
 
+        panel.standardWindowButton(.closeButton)?.isHidden = true
+        panel.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        panel.standardWindowButton(.zoomButton)?.isHidden = true
+
+        panel.ignoresMouseEvents = true
+
+        let monitorHandler: (NSEvent) -> Void = { [weak panel] event in
+            panel?.ignoresMouseEvents = !event.modifierFlags.contains(.shift)
+        }
+
+        let localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { event in
+            monitorHandler(event)
+            return event
+        }
+        
+        let globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { event in
+            monitorHandler(event)
+        }
+
+        eventMonitor = [localMonitor as Any, globalMonitor as Any]
+
         panel.orderFrontRegardless()
 
         self.panel = panel
@@ -47,6 +70,12 @@ final class FloatingPanelController: ObservableObject {
     }
 
     func close() {
+        if let monitors = eventMonitor as? [Any] {
+            for monitor in monitors {
+                NSEvent.removeMonitor(monitor)
+            }
+            eventMonitor = nil
+        }
         panel?.close()
         panel = nil
         isShowing = false
