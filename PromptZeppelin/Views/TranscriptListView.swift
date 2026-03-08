@@ -20,7 +20,7 @@ struct TranscriptListView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(transcript.title)
                         .fontWeight(.medium)
-                    Text(transcript.updatedAt, style: .relative)
+                    Text(transcript.updatedAt.formatted(date: .abbreviated, time: .shortened))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
