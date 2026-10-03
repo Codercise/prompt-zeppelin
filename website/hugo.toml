@@ -1,0 +1,10 @@
+baseURL = "https://prompt-zeppelin.pages.dev/"
+languageCode = "en"
+title = "Prompt Zeppelin"
+disableKinds = ["taxonomy", "term", "rss"]
+
+[params]
+  tagline = "A teleprompter that sits under your webcam"
+  description = "Prompt Zeppelin is a teleprompter for your Mac. It shows your script a few words at a time, just below the camera, so you can read naturally on calls and recordings."
+  github = "https://github.com/Codercise/prompt-zeppelin"
+  copyright = "Swooping Magpies Inc"

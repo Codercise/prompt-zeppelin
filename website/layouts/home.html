@@ -1,0 +1,103 @@
+{{ define "main" }}
+{{ $script := "Look at the camera, not at your notes. Prompt Zeppelin shows your script a few words at a time, right under your webcam, so you can read naturally and keep eye contact with everyone watching." }}
+{{ $words := split $script " " }}
+
+<section class="hero">
+  <div class="screen" role="img" aria-label="The top of a Mac screen with Prompt Zeppelin showing a script a few words at a time, just below the webcam">
+    <div class="notch"><span class="camera"></span><span class="camera-light"></span></div>
+    <div class="prompter" data-script="{{ $script }}">
+      {{ range $i, $w := first 5 $words }}<span{{ if eq $i 0 }} class="current"{{ end }}>{{ $w }}</span>{{ end }}
+    </div>
+  </div>
+
+  <div class="hero-copy">
+    <h1>Your script, right under your webcam</h1>
+    <p class="lede">Prompt Zeppelin is a teleprompter for your Mac. It shows your words just below the camera, a few at a time, so you can read naturally on calls and recordings.</p>
+    <div class="actions">
+      <a class="button" href="{{ site.Params.github }}">View on GitHub</a>
+      <a class="button button-quiet" href="#download">Download coming soon</a>
+    </div>
+  </div>
+</section>
+
+<section class="how" aria-labelledby="how-title">
+  <h2 id="how-title">How it works</h2>
+  <ol class="steps">
+    <li>
+      <h3>Write your script</h3>
+      <p>Paste in what you want to say, or type it straight into the editor.</p>
+    </li>
+    <li>
+      <h3>Open the teleprompter</h3>
+      <p>It appears at the top of your screen, just under the camera. Hold Shift and drag to fine-tune where it sits.</p>
+    </li>
+    <li>
+      <h3>Press play</h3>
+      <p>Words move along at the speed you set. Pause, stop or change the speed whenever you need to.</p>
+    </li>
+  </ol>
+  <figure class="shot">
+    <img src="{{ "images/main-window.png" | relURL }}" width="1040" height="640" loading="lazy"
+         alt="The Prompt Zeppelin window, with a list of scripts on the left and the selected script open in the editor, with teleprompter, play, stop and speed controls above it">
+  </figure>
+</section>
+
+<section class="features" aria-labelledby="features-title">
+  <h2 id="features-title">Made for reading on camera</h2>
+  <figure class="overlay-shot">
+    <img src="{{ "images/overlay.png" | relURL }}" width="552" height="78" loading="lazy"
+         alt="The teleprompter mid-script, showing the words: show you something we've been. The word something is bold.">
+    <figcaption>The teleprompter mid-script. The word you're on is bold, with the next few beside it.</figcaption>
+  </figure>
+  <dl class="feature-list">
+    {{ range site.Data.features }}
+    <div>
+      <dt>{{ .title }}</dt>
+      <dd>{{ .text }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+</section>
+
+<section class="download" id="download" aria-labelledby="download-title">
+  <h2 id="download-title">Download</h2>
+  <p>Prompt Zeppelin isn't ready to download just yet. Follow the project on <a href="{{ site.Params.github }}">GitHub</a> to hear when it is, or build it yourself today.</p>
+  <h3>Build it yourself</h3>
+  <p>You'll need macOS 14 or later, Xcode 16 and <a href="https://github.com/yonaskolb/XcodeGen">XcodeGen</a>.</p>
+  <pre><code>brew install xcodegen
+git clone {{ site.Params.github }}.git
+cd prompt-zeppelin
+xcodegen generate
+open PromptZeppelin.xcodeproj</code></pre>
+  <p>Then press Run in Xcode.</p>
+</section>
+
+<script>
+  (() => {
+    const el = document.querySelector(".prompter");
+    if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const words = el.dataset.script.split(" ");
+    const wordsPerMinute = 150;
+    let index = 0;
+
+    const render = () => {
+      const visible = matchMedia("(max-width: 560px)").matches ? 3 : 5;
+      const end = Math.min(words.length, Math.max(0, index - Math.floor(visible / 2)) + visible);
+      const start = Math.max(0, end - visible);
+      el.replaceChildren(...words.slice(start, end).map((word, i) => {
+        const span = document.createElement("span");
+        span.textContent = word;
+        if (start + i === index) span.className = "current";
+        return span;
+      }));
+    };
+
+    render();
+    setInterval(() => {
+      index = (index + 1) % words.length;
+      render();
+    }, 60000 / wordsPerMinute);
+  })();
+</script>
+{{ end }}
