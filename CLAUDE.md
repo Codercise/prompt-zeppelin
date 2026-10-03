@@ -31,6 +31,7 @@ PromptZeppelin/
   ViewModels/                # View models
   Services/                  # File persistence, etc.
 docs/                        # Documentation and plans
+website/                     # Hugo marketing site, deployed to Cloudflare Pages (not part of the Xcode project)
 ```
 
 ## Development Notes
