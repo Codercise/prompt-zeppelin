@@ -44,4 +44,6 @@ xcodebuild -project PromptZeppelin.xcodeproj -scheme PromptZeppelin -configurati
 
 ## License
 
-[MIT](LICENSE)
+Source available under the [PolyForm Shield License 1.0.0](LICENSE). You're free to use, modify, and share it for any purpose except building a product that competes with Prompt Zeppelin.
+
+Copyright (c) 2026 Swooping Magpies Inc
