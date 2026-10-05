@@ -1,7 +1,8 @@
-baseURL = "https://prompt-zeppelin.pages.dev/"
+baseURL = "https://promptzeppelin.com/"
 languageCode = "en"
 title = "Prompt Zeppelin"
 disableKinds = ["taxonomy", "term", "rss"]
+enableRobotsTXT = true
 
 [params]
   tagline = "A teleprompter that sits under your webcam"
